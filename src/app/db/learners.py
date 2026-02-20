@@ -19,9 +19,15 @@ async def read_learners(
     return list(result.all())
 
 
+from datetime import datetime
+
 async def create_learner(session: AsyncSession, name: str, email: str) -> Learner:
     """Create a new learner in the database."""
-    learner = Learner(name=name, email=email)
+    learner = Learner(
+        name=name,
+        email=email,
+        enrolled_at=datetime.utcnow(),  # naive datetime for TIMESTAMP WITHOUT TIME ZONE
+    )
     session.add(learner)
     await session.commit()
     await session.refresh(learner)
